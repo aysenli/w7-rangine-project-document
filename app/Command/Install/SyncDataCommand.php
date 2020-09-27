@@ -14,6 +14,7 @@ namespace W7\App\Command\Install;
 
 use W7\Console\Command\CommandAbstract;
 use W7\Core\Exception\CommandException;
+use W7\Core\Facades\Config;
 
 class SyncDataCommand extends CommandAbstract
 {
@@ -23,10 +24,10 @@ class SyncDataCommand extends CommandAbstract
 	{
 		try {
 			$get = [
-				'host' => ienv('DATABASE_ORIGINAL_HOST'),
-				'username' => ienv('DATABASE_ORIGINAL_USERNAME'),
-				'password' => ienv('DATABASE_ORIGINAL_PASSWORD'),
-				'database' => ienv('DATABASE_ORIGINAL_DATABASE'),
+				'host' => Config::get('install.database.host'),
+				'username' => Config::get('install.database.username'),
+				'password' => Config::get('install.database.password'),
+				'database' => Config::get('install.database.database'),
 			];
 
 //			获取用户 (商城数据库配置)

@@ -9,6 +9,7 @@ use Throwable;
 use W7\App\Exception\ErrorHttpException;
 use W7\App\Model\Logic\AppLogic;
 use W7\App\Model\Logic\UserLogic;
+use W7\Core\Facades\Container;
 use W7\Core\Middleware\MiddlewareAbstract;
 
 class AppAuthMiddleware extends MiddlewareAbstract
@@ -23,7 +24,7 @@ class AppAuthMiddleware extends MiddlewareAbstract
 		/**
 		 * @var AppLogic $appLogic
 		 */
-		$appLogic = iloader()->singleton(AppLogic::class);
+		$appLogic = Container::singleton(AppLogic::class);
 		$app = $appLogic->getByAppId($params['appid']);
 
 		if (empty($app)) {

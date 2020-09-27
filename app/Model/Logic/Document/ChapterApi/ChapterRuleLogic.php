@@ -13,6 +13,8 @@
 namespace W7\App\Model\Logic\Document\ChapterApi;
 
 use W7\App\Model\Entity\Document\ChapterApiParam;
+use W7\Core\Facades\Cache;
+use W7\Core\Facades\Config;
 
 //返回演示数据demo
 class ChapterRuleLogic extends ChapterCommonLogic
@@ -29,8 +31,7 @@ class ChapterRuleLogic extends ChapterCommonLogic
 		$chapterId = $this->chapterId;
 		$chapterRecordLogic = new ChapterRecordLogic($chapterId);
 		$data = $chapterRecordLogic->getBodyInfo($chapterId, ChapterApiParam::LOCATION_REPONSE_BODY_RAW, $reponseId);
-		$url = ienv('MOCK_API');
-		$json = $this->send_post($url, json_encode($data));
+		$json = $this->send_post(Config::get('common.mock_api'), json_encode($data));
 		if ($this->isJson($json)) {
 			return json_decode($json, true);
 		}
@@ -75,7 +76,7 @@ class ChapterRuleLogic extends ChapterCommonLogic
 			$cacheIndex = $this->getChapterIdRequestIndex();
 			$locationList = array_keys($this->requestIds());
 		}
-		$Cache = icache()->get($cacheIndex);
+		$Cache = Cache::get($cacheIndex);
 		if ($Cache) {
 			return json_decode($Cache, true);
 		}
@@ -86,7 +87,7 @@ class ChapterRuleLogic extends ChapterCommonLogic
 		}
 		$chapterList = $obj->whereIn('location', $locationList)->get();
 		$data = $this->getChapterDemoChildrenArray($chapterList, '', 0);
-		icache()->set($cacheIndex, json_encode($data['rule']), 3600 * 24);
+		Cache::set($cacheIndex, json_encode($data['rule']), 3600 * 24);
 		return $data['rule'];
 	}
 

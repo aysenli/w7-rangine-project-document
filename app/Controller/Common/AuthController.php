@@ -22,6 +22,8 @@ use W7\App\Model\Entity\User;
 use W7\App\Model\Entity\UserThirdParty;
 use W7\App\Model\Logic\ThirdPartyLoginLogic;
 use W7\App\Model\Logic\UserLogic;
+use W7\Core\Facades\Cache;
+use W7\Core\Facades\Container;
 use W7\Core\Session\Session;
 use W7\Http\Message\Server\Request;
 
@@ -112,13 +114,13 @@ class AuthController extends BaseController
 		/**
 		 * @var SocialiteManager $socialite
 		 */
-		$socialite = iloader()->get(SocialiteManager::class);
+		$socialite = Container::get(SocialiteManager::class);
 		//获取可用的第三方登录列表
 		foreach ($setting['channel'] as $key => $item) {
 			if (!empty($item['setting']['enable'])) {
 				try {
 					$socialite = clone $socialite;
-					$url = ienv('API_HOST') . 'login?app_id=' . $key . '&redirect_url=' . urlencode($redirectUrl);
+					$url = \W7\Core\Facades\Config::get('common.api_host') . 'login?app_id=' . $key . '&redirect_url=' . urlencode($redirectUrl);
 					$redirect = $socialite->config(new Config([
 						'client_id' => $item['setting']['app_id'],
 						'client_secret' => $item['setting']['secret_key']
@@ -146,9 +148,9 @@ class AuthController extends BaseController
 			/**
 			 * @var SocialiteManager $socialite
 			 */
-			$socialite = iloader()->get(SocialiteManager::class);
+			$socialite = Container::get(SocialiteManager::class);
 			$socialite = clone $socialite;
-			$url = ienv('API_HOST') . 'login?app_id=' . $defaultSetting['default_login_channel'] . '&redirect_url=' . $redirectUrl;
+			$url = \W7\Core\Facades\Config::get('common.api_host') . 'login?app_id=' . $defaultSetting['default_login_channel'] . '&redirect_url=' . $redirectUrl;
 			try {
 				return $this->data($socialite->config(new Config([
 					'client_id' => $setting['setting']['app_id'],
@@ -180,7 +182,7 @@ class AuthController extends BaseController
 		/**
 		 * @var SocialiteManager $socialite
 		 */
-		$socialite = iloader()->get(SocialiteManager::class);
+		$socialite = Container::get(SocialiteManager::class);
 		$driver = $socialite->config(new Config([
 			'client_id' => $setting['setting']['app_id'],
 			'client_secret' => $setting['setting']['secret_key']
@@ -303,20 +305,20 @@ class AuthController extends BaseController
 			/**
 			 * @var SocialiteManager $socialite
 			 */
-			$socialite = iloader()->get(SocialiteManager::class);
+			$socialite = Container::get(SocialiteManager::class);
 			return $socialite->config(new Config([
 				'client_id' => $setting['setting']['app_id'],
 				'client_secret' => $setting['setting']['secret_key']
 			]))->driver($sourceApp)->logout($this->response());
 		} else {
-			$utl = ienv('API_HOST') . 'admin-login';
+			$utl = \W7\Core\Facades\Config::get('common.api_host') . 'admin-login';
 			return $this->response()->redirect($utl);
 		}
 	}
 
 	public function getlogouturl(Request $request)
 	{
-		$utl = ienv('API_HOST') . 'common/auth/logout';
+		$utl = \W7\Core\Facades\Config::get('common.api_host') . 'common/auth/logout';
 		return $this->data($utl);
 	}
 
@@ -327,6 +329,6 @@ class AuthController extends BaseController
 			'username' => $user->username,
 		]);
 		//用户在修改密码后，删除该值，触发退出操作
-		icache()->set(sprintf(UserLogic::USER_LOGOUT_AFTER_CHANGE_PWD, $user->id), 1, 7 * 86400);
+		Cache::set(sprintf(UserLogic::USER_LOGOUT_AFTER_CHANGE_PWD, $user->id), 1, 7 * 86400);
 	}
 }

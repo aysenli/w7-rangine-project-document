@@ -17,6 +17,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use W7\App;
+use W7\Core\Facades\Context;
 
 class CorsApiMiddleware implements MiddlewareInterface
 {
@@ -31,7 +32,7 @@ class CorsApiMiddleware implements MiddlewareInterface
 //		$urlInfo = parse_url($headerHost);
 //		$headerHost = ($urlInfo['scheme'] ?? '') . '://' . ($urlInfo['host'] ?? '');
 
-		$response = App::getApp()->getContext()->getResponse();
+		$response = Context::getResponse();
 
 		$header=$request->getHeaders();
 		$allowHeaders=[];
@@ -47,7 +48,7 @@ class CorsApiMiddleware implements MiddlewareInterface
 			return $response->json('success');
 		}
 
-		App::getApp()->getContext()->setResponse($response);
+		Context::setResponse($response);
 		return $handler->handle($request);
 	}
 }

@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Overtrue\Socialite\ProviderInterface;
 use Overtrue\Socialite\Providers\AbstractProvider;
 use Overtrue\Socialite\AccessTokenInterface;
+use W7\Core\Facades\Config;
 use W7\Http\Message\Server\Response;
 
 class We7Oauth extends AbstractProvider implements ProviderInterface
@@ -25,8 +26,8 @@ class We7Oauth extends AbstractProvider implements ProviderInterface
 		];
 
 		$headers = [];
-		if (ienv('OAUTH_USER_AGENT')) {
-			$headers['User-Agent'] = ienv('OAUTH_USER_AGENT');
+		if (Config::get('common.request_user_agent')) {
+			$headers['User-Agent'] = Config::get('common.request_user_agent');
 		}
 		$response = (new Client())->post('http://api.w7.cc/oauth/login-url/index', [
 			'form_params' => $data,
@@ -99,12 +100,12 @@ class We7Oauth extends AbstractProvider implements ProviderInterface
 	public function logout(Response $psrResponse): Response
 	{
 		$data = [
-			'redirect_url' => ienv('API_HOST') . 'admin-login'
+			'redirect_url' => Config::get('common.api_host') . 'admin-login'
 		];
 
 		$headers = [];
-		if (ienv('OAUTH_USER_AGENT')) {
-			$headers['User-Agent'] = ienv('OAUTH_USER_AGENT');
+		if (Config::get('common.request_user_agent')) {
+			$headers['User-Agent'] = Config::get('common.request_user_agent');
 		}
 		$response = (new Client())->post('http://api.w7.cc/oauth/logout-url/index', [
 			'form_params' => $data,

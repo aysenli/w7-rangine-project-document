@@ -15,6 +15,7 @@ namespace W7\App\Controller\Install;
 use W7\App\Controller\BaseController;
 use W7\App\Exception\ErrorHttpException;
 use W7\App\Model\Logic\Install\InstallLogic;
+use W7\Core\Facades\Config;
 use W7\Http\Message\Server\Request;
 
 class IndexController extends BaseController
@@ -23,8 +24,8 @@ class IndexController extends BaseController
 	{
 		$data = [
 			'is_install' => $this->isInstall(),
-			'api_host' => ienv('API_HOST'),
-			'db_database' => ienv('DATABASE_DEFAULT_DATABASE'),
+			'api_host' => Config::get('common.api_host'),
+			'db_database' => Config::get('install.database.default_database_name'),
 		];
 		return $this->data($data);
 	}
@@ -35,7 +36,7 @@ class IndexController extends BaseController
 		$isInstall = file_exists(RUNTIME_PATH . '/install.lock');
 		if ($isInstall) {
 			$value = 1;
-			if (ienv('API_HOST')) {
+			if (Config::get('common.api_host')) {
 				//已安装已重启
 				$value = 2;
 			}

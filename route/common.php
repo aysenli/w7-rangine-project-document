@@ -13,28 +13,28 @@
 use W7\App;
 use function GuzzleHttp\Psr7\build_query;
 
-irouter()->any('/oauth/login', function () {
+\W7\Core\Facades\Router::any('/oauth/login', function () {
 	$request = App::getApp()->getContext()->getRequest();
 	$query = $request->getQueryParams();
 
-	return App::getApp()->getContext()->getResponse()->redirect(ienv('API_HOST') . 'login?' . build_query($query));
+	return \W7\Core\Facades\Context::getResponse()->redirect(ienv('API_HOST') . 'login?' . build_query($query));
 });
 
 //获取验证码
-irouter()->post('/common/verifycode/image', 'Common\VerifyCodeController@image');
+\W7\Core\Facades\Router::post('/common/verifycode/image', 'Common\VerifyCodeController@image');
 
 //登录退出
-irouter()->post('/common/auth/login', 'Common\AuthController@login');
-irouter()->post('/common/auth/method', 'Common\AuthController@method');
+\W7\Core\Facades\Router::post('/common/auth/login', 'Common\AuthController@login');
+\W7\Core\Facades\Router::post('/common/auth/method', 'Common\AuthController@method');
 
-irouter()->get('/common/auth/getlogouturl', 'Common\AuthController@getlogouturl');
-irouter()->get('/common/auth/logout', 'Common\AuthController@logout');
-irouter()->post('/common/auth/logout', 'Common\AuthController@logout');
-irouter()->middleware('CheckAuthMiddleware')
+\W7\Core\Facades\Router::get('/common/auth/getlogouturl', 'Common\AuthController@getlogouturl');
+\W7\Core\Facades\Router::get('/common/auth/logout', 'Common\AuthController@logout');
+\W7\Core\Facades\Router::post('/common/auth/logout', 'Common\AuthController@logout');
+\W7\Core\Facades\Router::middleware('CheckAuthMiddleware')
 	->post('/common/auth/user', 'Common\AuthController@user');
 
-irouter()->post('/common/auth/third-party-login', 'Common\AuthController@thirdPartyLogin');
-irouter()->post('/common/auth/third-party-login-bind', 'Common\AuthController@thirdPartyLoginBind');
-irouter()->post('/common/auth/default-login-url', 'Common\AuthController@defaultLoginUrl');
+\W7\Core\Facades\Router::post('/common/auth/third-party-login', 'Common\AuthController@thirdPartyLogin');
+\W7\Core\Facades\Router::post('/common/auth/third-party-login-bind', 'Common\AuthController@thirdPartyLoginBind');
+\W7\Core\Facades\Router::post('/common/auth/default-login-url', 'Common\AuthController@defaultLoginUrl');
 
-irouter()->post('/menu/setting', 'Common\MenuController@setting');
+\W7\Core\Facades\Router::post('/menu/setting', 'Common\MenuController@setting');

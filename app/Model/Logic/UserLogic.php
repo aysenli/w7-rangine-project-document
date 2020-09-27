@@ -13,6 +13,7 @@
 namespace W7\App\Model\Logic;
 
 use W7\App\Model\Entity\User;
+use W7\Core\Facades\Cache;
 use W7\Core\Helper\Traiter\InstanceTraiter;
 
 class UserLogic extends BaseLogic
@@ -84,7 +85,7 @@ class UserLogic extends BaseLogic
 		if (!empty($userInfo['userpass'])) {
 			$userInfo['userpass'] = $this->userPwdEncryption($userInfo['username'], $userInfo['userpass']);
 			//修改完密码后强制退出
-			icache()->delete(sprintf(self::USER_LOGOUT_AFTER_CHANGE_PWD, $userInfo['id']));
+			Cache::delete(sprintf(self::USER_LOGOUT_AFTER_CHANGE_PWD, $userInfo['id']));
 		}
 		
 		$result = User::query()->where('id', $userInfo['id'])->update($userInfo);

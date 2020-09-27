@@ -20,6 +20,7 @@ use W7\App\Model\Entity\Document\ChapterApiReponse;
 use W7\App\Model\Logic\Document\ChapterApiLogic;
 use W7\App\Model\Logic\Document\ChapterApiParamLogic;
 use function GuzzleHttp\Psr7\build_query;
+use W7\Core\Facades\Cache;
 
 /**
  * 数据存储与转markdown
@@ -54,14 +55,14 @@ class ChapterRecordLogic
 			$chapterId = $this->chapterId;
 
 			$cacheIndex = $this->getChapterIdRecordIndex($chapterId);
-			$recordCache = icache()->get($cacheIndex);
+			$recordCache = Cache::get($cacheIndex);
 			if ($recordCache) {
 				//清除缓存
-				icache()->delete($cacheIndex);
+				Cache::delete($cacheIndex);
 				//清除请求规则缓存
 				$chapterRuleLogic = new ChapterRuleLogic($chapterId);
 				$cacheRequestIndex = $chapterRuleLogic->getChapterIdRequestIndex();
-				icache()->delete($cacheRequestIndex);
+				Cache::delete($cacheRequestIndex);
 			}
 			foreach ($record as $key => $val) {
 				if (is_array($val)) {
@@ -127,7 +128,7 @@ class ChapterRecordLogic
 					//清除请求规则缓存
 					$chapterRuleLogic = new ChapterRuleLogic($chapterId);
 					$cacheRequestIndex = $chapterRuleLogic->getChapterIdReponseIndex($val['id']);
-					icache()->delete($cacheRequestIndex);
+					Cache::delete($cacheRequestIndex);
 
 					//修改
 					$chapterApiReponse = ChapterApiReponse::query()->find($val['id']);
@@ -599,7 +600,7 @@ class ChapterRecordLogic
 		$chapterId = $this->chapterId;
 
 		$cacheIndex = $this->getChapterIdRecordIndex($chapterId);
-		$recordCache = icache()->get($cacheIndex);
+		$recordCache = Cache::get($cacheIndex);
 		if ($recordCache) {
 			return json_decode($recordCache, true);
 		}
@@ -636,7 +637,7 @@ class ChapterRecordLogic
 			$chapterApi->tab_location = $tab_location;
 			$record['api'] = $chapterApi;
 		}
-		icache()->set($cacheIndex, json_encode($record), 3600 * 24);
+		Cache::set($cacheIndex, json_encode($record), 3600 * 24);
 		return $record;
 	}
 

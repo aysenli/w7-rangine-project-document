@@ -5,6 +5,8 @@ namespace W7\App\Provider\Socialite\ThirdPartyLogin;
 use W7\App\Model\Logic\ThirdPartyLoginLogic;
 use Overtrue\Socialite\User;
 use RuntimeException;
+use W7\Core\Facades\Config;
+use W7\Core\Facades\Container;
 use W7\Http\Message\Server\Response;
 
 trait OauthTrait
@@ -14,7 +16,7 @@ trait OauthTrait
 
 	private function initConfig()
 	{
-		$config = iloader()->get(ThirdPartyLoginLogic::class)->getThirdPartyLoginChannelById($this->getAppUnionId());
+		$config = Container::get(ThirdPartyLoginLogic::class)->getThirdPartyLoginChannelById($this->getAppUnionId());
 		if (!$config['setting']) {
 			throw new \RuntimeException('授权登陆方式 ' . $this->getAppUnionId() . ' 不存在');
 		}
@@ -63,6 +65,6 @@ trait OauthTrait
 
 	public function logout(Response $response): Response
 	{
-		return $response->redirect(ienv('API_HOST') . 'login');
+		return $response->redirect(Config::get('common.api_host') . 'login');
 	}
 }

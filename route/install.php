@@ -10,6 +10,6 @@
  * visited https://www.w7.cc for more details
  */
 
-irouter()->post('/install/systemDetection', 'Install\IndexController@systemDetection');
-irouter()->post('/install/install', 'Install\IndexController@install');
-irouter()->post('/install/config', 'Install\IndexController@config');
+\W7\Core\Facades\Router::post('/install/systemDetection', 'Install\IndexController@systemDetection');
+\W7\Core\Facades\Router::post('/install/install', 'Install\IndexController@install');
+\W7\Core\Facades\Router::post('/install/config', 'Install\IndexController@config');

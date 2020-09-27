@@ -18,6 +18,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 use W7\App\Exception\ErrorHttpException;
 use W7\App\Model\Entity\Setting;
 use W7\App\Model\Logic\UserLogic;
+use W7\Core\Facades\Cache;
 use W7\Core\Middleware\MiddlewareAbstract;
 
 class CheckAuthMiddleware extends MiddlewareAbstract
@@ -29,7 +30,7 @@ class CheckAuthMiddleware extends MiddlewareAbstract
 			throw new ErrorHttpException('请先登录', [], Setting::ERROR_NO_LOGIN);
 		}
 		//如果修改密码后强制退出
-		if (empty($user['login_from_app']) && !icache()->has(sprintf(UserLogic::USER_LOGOUT_AFTER_CHANGE_PWD, $user['uid']))) {
+		if (empty($user['login_from_app']) && !Cache::has(sprintf(UserLogic::USER_LOGOUT_AFTER_CHANGE_PWD, $user['uid']))) {
 			$request->session->destroy();
 			throw new ErrorHttpException('请先登录', [], Setting::ERROR_NO_LOGIN);
 		}

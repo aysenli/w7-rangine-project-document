@@ -2,6 +2,7 @@
 
 namespace W7\App\Model\Logic;
 
+use W7\Core\Facades\Config;
 use W7\Core\Helper\Traiter\InstanceTraiter;
 
 class UserShareLogic extends BaseLogic
@@ -12,7 +13,7 @@ class UserShareLogic extends BaseLogic
 
 	public function getShareUrl($userId, $documentId, $chapterId)
 	{
-		return rtrim(ienv('API_HOST'), '/') . '/chapter/' . $documentId. '?id=' . $chapterId . '&share_key=' . urlencode(authcode($userId . '-' . $chapterId, 'ENCODED', self::SHARE_KEY));
+		return rtrim(Config::get('common.api_host'), '/') . '/chapter/' . $documentId. '?id=' . $chapterId . '&share_key=' . urlencode(authcode($userId . '-' . $chapterId, 'ENCODED', self::SHARE_KEY));
 	}
 
 	public function getUidAndChapterByShareKey($shareKey)

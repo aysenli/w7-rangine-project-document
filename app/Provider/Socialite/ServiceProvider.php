@@ -4,6 +4,8 @@ namespace W7\App\Provider\Socialite;
 
 use Overtrue\Socialite\SocialiteManager;
 use Symfony\Component\Finder\Finder;
+use W7\Core\Facades\Config;
+use W7\Core\Facades\Container;
 use W7\Core\Provider\ProviderAbstract;
 
 class ServiceProvider extends ProviderAbstract
@@ -16,7 +18,7 @@ class ServiceProvider extends ProviderAbstract
 
 	private function registerSocialiteManager()
 	{
-		iloader()->set(SocialiteManager::class, function() {
+		Container::set(SocialiteManager::class, function() {
 			return new SocialiteManager([]);
 		});
 	}
@@ -38,12 +40,12 @@ class ServiceProvider extends ProviderAbstract
 		/**
 		 * @var SocialiteManager $socialite
 		 */
-		$socialite = iloader()->get(SocialiteManager::class);
+		$socialite = Container::get(SocialiteManager::class);
 		foreach ($thirdPartyLogins as $name => $thirdPartyLogin) {
 			$obj = new $thirdPartyLogin($socialite->getRequest(), '', '', '');
 			$appId = $obj->getAppUnionId();
 			$socialite->extend($appId, function ($config) use ($socialite, $thirdPartyLogin, $appId) {
-				$redirectUrl = empty($config['redirect_url']) ? ienv('API_HOST') . 'login?app_id=' . $appId : $config['redirect_url'];
+				$redirectUrl = empty($config['redirect_url']) ? Config::get('common.api_host') . 'login?app_id=' . $appId : $config['redirect_url'];
 				return new $thirdPartyLogin(
 					$socialite->getRequest(),
 					$config['client_id'],
